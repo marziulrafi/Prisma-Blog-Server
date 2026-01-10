@@ -5,54 +5,54 @@ import nodemailer from 'nodemailer'
 
 
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // Use true for port 465, false for port 587
-    auth: {
-        user: process.env.APP_USER,
-        pass: process.env.APP_PASS,
-    },
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // Use true for port 465, false for port 587
+  auth: {
+    user: process.env.APP_USER,
+    pass: process.env.APP_PASS,
+  },
 });
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    trustedOrigins: [process.env.APP_URL!],
-    user: {
-        additionalFields: {
-            role: {
-                type: "string",
-                defaultValue: "USER",
-                required: false
-            },
-            phone: {
-                type: "string",
-                required: false
-            },
-            status: {
-                type: "string",
-                defaultValue: "ACTIVE",
-                required: false
-            }
-        }
-    },
-    emailAndPassword: {
-        enabled: true,
-        autoSignIn: false,
-        requireEmailVerification: true
-    },
-    emailVerification: {
-        sendOnSignUp: true,
-        sendVerificationEmail: async ({ user, url, token }, request) => {
-            try {
-                const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`
-                const info = await transporter.sendMail({
-                    from: '"Prisma Blog" <prismablog@app.com>',
-                    to: user.email,
-                    subject: "Email Verification",
-                    html:
-                        `
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  trustedOrigins: [process.env.APP_URL!],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "USER",
+        required: false
+      },
+      phone: {
+        type: "string",
+        required: false
+      },
+      status: {
+        type: "string",
+        defaultValue: "ACTIVE",
+        required: false
+      }
+    }
+  },
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: false,
+    requireEmailVerification: true
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      try {
+        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`
+        const info = await transporter.sendMail({
+          from: '"Prisma Blog" <prismablog@app.com>',
+          to: user.email,
+          subject: "Email Verification",
+          html:
+            `
                 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,7 +144,7 @@ export const auth = betterAuth({
       </p>
       
       <p style="word-break: break-all; font-size: 14px; color: #64748b; background: #f1f5f9; padding: 16px; border-radius: 8px;">
-        ${verificationUrl}
+        ${url}
       </p>
 
       <p style="margin-top: 40px; font-size: 14px; color: #64748b;">
@@ -160,15 +160,22 @@ export const auth = betterAuth({
 </body>
 </html>
                 `
-                });
+        });
 
-                console.log("Message sent : ", info.messageId);
+        console.log("Message sent : ", info.messageId);
 
-            }
-            catch (err) {
-                console.error(err);
-                throw err
-            }
-        },
+      }
+      catch (err) {
+        console.error(err);
+        throw err
+      }
     },
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
 });
