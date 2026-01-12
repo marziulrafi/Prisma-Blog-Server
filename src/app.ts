@@ -13,13 +13,12 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 
 
+app.use('/posts', PostRouter)
+
 
 app.get('/', (req, res) => {
     res.send('Hello!!');
 });
-
-
-app.use('/posts', PostRouter)
 
 
 export default app;
