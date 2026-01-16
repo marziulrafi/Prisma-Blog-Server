@@ -16,10 +16,12 @@ const createPost = async (data: Omit<Post, "id" | "createdAT" | "updatedAt" | "a
 
 const getAllPosts = async ({
     search,
-    tags
+    tags,
+    isFeatured
 }: {
     search: string | undefined,
-    tags: string[] | []
+    tags: string[] | [],
+    isFeatured: boolean
 }) => {
 
     const andConditions: PostWhereInput[] = []
@@ -60,6 +62,14 @@ const getAllPosts = async ({
             }
         )
     }
+
+
+    if (typeof isFeatured === 'boolean') {
+        andConditions.push({
+            isFeatured
+        })
+    }
+
 
     const allPosts = await prisma.post.findMany({
         where: {
