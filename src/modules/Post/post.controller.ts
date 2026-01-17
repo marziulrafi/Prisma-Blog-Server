@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { postService } from "./post.service";
 import { error } from "node:console";
 
-const createPost = async (req: Request, res: Response) => {
+const createPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.user) {
             return res.status(400).json({
@@ -13,10 +13,7 @@ const createPost = async (req: Request, res: Response) => {
 
         res.status(201).json(result)
     } catch (e) {
-        res.status(400).json({
-            error: "Post creation failed",
-            details: e
-        })
+        next(e)
     }
 }
 
