@@ -38,8 +38,10 @@ const getAllPosts = async (req: Request, res: Response) => {
 
 
         const status = req.query.status as PostStatus | undefined
+        const authorId = req.query.authorId as string | undefined
 
-        const result = await postService.getAllPosts({ search: searchString, tags, isFeatured, status })
+
+        const result = await postService.getAllPosts({ search: searchString, tags, isFeatured, status, authorId })
         res.status(200).json(result)
     } catch (e) {
         res.status(400).json({
