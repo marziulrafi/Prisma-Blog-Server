@@ -16,5 +16,10 @@ router.get(
     CommentController.getCommentById
 )
 
+router.get(
+    "/author/:authorId",
+    CommentController.getCommentsByAuthor
+)
+
 
 export const CommentRouter: Router = router;
