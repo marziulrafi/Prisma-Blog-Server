@@ -21,5 +21,11 @@ router.get(
     CommentController.getCommentsByAuthor
 )
 
+router.patch(
+    "/:commentId",
+    auth(UserRole.USER, UserRole.ADMIN),
+    CommentController.updateComment
+)
+
 
 export const CommentRouter: Router = router;
